@@ -2,7 +2,7 @@ defmodule ASN.MatcherTest do
   use ExUnit.Case, async: true
 
   setup do
-    {:ok, pid} = ASN.Matcher.start_link
+    {:ok, pid} = ASN.Matcher.start_link()
     {:ok, matcher: pid}
   end
 

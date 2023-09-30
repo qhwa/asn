@@ -11,8 +11,13 @@ defmodule ASN.Parser do
     # ip - / - mask - whitespaces - as-id
     case Regex.run(~r[(\d+)\.(\d+)\.(\d+)\.(\d+)/(\d+)\s+(\d+)], line) do
       [_, ip1, ip2, ip3, ip4, mask, as] ->
-        [{[ip1, ip2, ip3, ip4] |> ip_to_tuple |> trunc_ip(String.to_integer(mask)), as |> String.to_integer}]
-      _ -> []
+        [
+          {[ip1, ip2, ip3, ip4] |> ip_to_tuple |> trunc_ip(String.to_integer(mask)),
+           as |> String.to_integer()}
+        ]
+
+      _ ->
+        []
     end
   end
 
@@ -27,22 +32,24 @@ defmodule ASN.Parser do
   def parse_as_to_asn_line(line) do
     # as - whitespaces - asn
     case Regex.run(~r/(\d+)\s+(.+)/, line) do
-      [_, as, asn] -> [{as |> String.to_integer, asn |> String.strip}]
-      _            -> []
+      [_, as, asn] -> [{as |> String.to_integer(), asn |> String.trim()}]
+      _ -> []
     end
   end
 
   @doc "Parses an IP from a string, or takes a list of the bytes as integer values as string"
   def ip_to_tuple([_, _, _, _] = ip) do
     ip = Enum.map(ip, &String.to_integer/1)
+
     if Enum.all?(ip, fn x -> x in 0..255 end),
-    do:   List.to_tuple(ip),
-    else: nil
+      do: List.to_tuple(ip),
+      else: nil
   end
+
   def ip_to_tuple(ip) when is_binary(ip) do
     case Regex.run(~r/(\d+)\.(\d+)\.(\d+)\.(\d+)/, ip) do
       [_, ip1, ip2, ip3, ip4] -> ip_to_tuple([ip1, ip2, ip3, ip4])
-      _                       -> nil
+      _ -> nil
     end
   end
 
@@ -52,4 +59,3 @@ defmodule ASN.Parser do
     final
   end
 end
-

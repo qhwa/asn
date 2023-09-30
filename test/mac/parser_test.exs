@@ -5,7 +5,7 @@ defmodule ASN.ParserTest do
   @bin <<1::8, 2::8, 3::8>>
 
   test "ip parse" do
-    assert ip_to_tuple("1.2.3.4") == {1, 2, 3 ,4}
+    assert ip_to_tuple("1.2.3.4") == {1, 2, 3, 4}
     assert ip_to_tuple("1.2.3.256") == nil
   end
 
